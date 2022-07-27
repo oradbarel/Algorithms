@@ -1,4 +1,4 @@
-#A program to get a graph from user, via terminal, and return it as aמ adjacency list.
+#A program to get a graph from user, via terminal, and return it as an adjacency list.
 
 ##### Constants:
 
@@ -11,8 +11,56 @@ NOT_CHAR = 'n'
 class QuitError(Exception):
     pass
 
+class Graph:
+    
+    def __init__(self, V: list, E: list) -> None:
+        self._V = V
+        self._E = E
+        self._verts_num = len(self._V)
+        if(self._verts_num == 0):
+            raise ValueError
+        self._edges_num = len(self._E)
+        self._adjacency_list = self.__makeAdjacencyList__()
+
+    def __makeAdjacencyList__(self) -> list:
+            return [[] for i in range(1, self._verts_num+1)]
+    
+    def getVertices(self):
+        return self._V
+
+    def getEdges(self):
+        return self._E
+
+    def getNumOfVertices(self):
+        return len(self._V)
+
+    def getNumOfEdges(self):
+        return len(self._E)
+    
+
+class DirectedGraph(Graph):
+
+    def __init__(self, V: list, E: list) -> None:
+        super().__init__(V, E)
+
+
+class UndirectedGraph(Graph):
+
+    def __init__(self, V: list, E: list) -> None:
+        super().__init__(V, E)
+
+
 ##### Functions:
-def getEdge(verts_list: list) -> tuple:
+
+def getIfDirectedFromTerminal() -> bool:
+    directed = ''
+    while(1):
+        directed = input("Press 'y' for directed graph or 'n' for undirected graph: ").lower()
+        if (directed in [YES_CHAR, NOT_CHAR]):
+            break
+    return (directed == YES_CHAR)
+
+def getEdgeFromTerminal(verts_list: list) -> tuple:
     """Gets an edge from user by the keybord. Returns it as a tuple.
 
 :param verts_list: A list of the vertices.
@@ -46,26 +94,19 @@ def getEdge(verts_list: list) -> tuple:
         print("Please insert an integer between 1 to {0}".format(n))
     return (src, dst)
 
-def getGraphFromTerminal() -> list:
+def getGraphFromTerminal() -> tuple:
+    
+    directed = getIfDirectedFromTerminal()
+
     n = int(input("Insert number of vertices: "))
-    V_list = [i for i in range(1, n+1)]
-    print("V is: " + str(V_list))
-    G = [[] for i in range(1, n+1)]
+    V = [i for i in range(1, n+1)]
+    print("V is: " + str(V))
 
-    # Wether the graph is directed or not:
-    directed = ''
-    while(1):
-        directed = input("Press 'y' for directed graph or 'n' for undirected graph: ").lower()
-        if (directed in [YES_CHAR, NOT_CHAR]):
-            break
-    directed = True if directed == YES_CHAR else False
-
-    # Get the edges:
     E = []
     print("Now, enter the edges (you may prees 'q' when you want to finish):")
     while(1):
         try:
-            (src, dst) = getEdge(V_list)
+            (src, dst) = getEdgeFromTerminal(V)
         except(QuitError):
             break
         e = ((int(src), int(dst)))
@@ -73,7 +114,10 @@ def getGraphFromTerminal() -> list:
         print("edge #{0}: {1}.".format(len(E), e))
     print("E is: " + str(E))
 
-    return G
+    return (V, E, directed)
+
+
+
 
 def getGraphFromJson():
     pass
@@ -84,7 +128,16 @@ def getGraphFromGUI():
 ##### Main Code:
 
 def main():
-    getGraphFromTerminal()
+    """
+    (V, E, directed) = getGraphFromTerminal()
+    my_graph = DirectedGraph(V, E) if directed else UndirectedGraph(V, E)
+
+    #G = [[] for i in range(1, n+1)]
+    # """
+
+    my_gr = DirectedGraph([], [])
+
+
 
 if __name__ == "__main__":
     main()
