@@ -1,4 +1,4 @@
-# Algorithms
+# Gragph-Algorithms
 ### My implemention of the Graph Algorithms.
 
 ## Download:
